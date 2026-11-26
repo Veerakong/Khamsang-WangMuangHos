@@ -2,212 +2,332 @@
 <html lang="th"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ทะเบียนคำสั่งตรวจรับพัสดุ</title>
+<title>ทะเบียนเลขคำสั่งตรวจรับพัสดุ e-GP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap">
 <style>
-body{margin:0}[hidden]{display:none!important}
-/* Layout: a government register ledger. Header band, three tabs, a flat ruled list for the register, one ruled form panel for issuing. */
+/* Layout: navy band with folder-style tabs; register = stats strip + search card + card rows; issue = form + side rail; admin = stacked panels. */
 :root{
-  --bg:#f1f3f8; --surface:#ffffff; --field:#ffffff; --ink:#16223a; --muted:#59657e;
-  --line:#dde2ec; --line-strong:#b9c2d3;
-  --accent:#1b4b99; --accent-ink:#ffffff; --accent-soft:#e2eaf8;
+  --bg:#f2f4f9; --surface:#ffffff; --field:#ffffff; --ink:#14213d; --muted:#5b6785;
+  --line:#e1e6f0; --line-strong:#c3cce0;
+  --band:#0e2750; --band2:#1b4b99; --band-ink:#ffffff; --band-muted:#b9c8e6;
+  --brand:#1b4b99; --brand-ink:#ffffff; --brand-soft:#e4ecfa; --mark:#fff0a6;
   --good:#17663f; --good-soft:#e0f1e8; --warn:#85560a; --warn-soft:#fbf0d8; --bad:#ae261f; --bad-soft:#fbe5e3;
+  --shadow:0 1px 2px rgba(16,32,64,.06),0 4px 14px rgba(16,32,64,.05);
   --font-head:"IBM Plex Sans Thai","Sarabun",system-ui,sans-serif;
   --font-body:"Sarabun","Noto Sans Thai",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0e1525; --surface:#161f38; --field:#0e1730; --ink:#e7ecf8; --muted:#9aa7c4;
-    --line:#26324f; --line-strong:#3b4a6e;
-    --accent:#86abf0; --accent-ink:#0a1530; --accent-soft:#1c2c52;
+    --bg:#0c1322; --surface:#151e36; --field:#0d162c; --ink:#e7ecf8; --muted:#9aa7c4;
+    --line:#25314f; --line-strong:#3a4a6f;
+    --band:#08101f; --band2:#14305f; --brand:#86abf0; --brand-ink:#0a1530; --brand-soft:#1b2b52; --mark:#6b5a10;
     --good:#74d6a6; --good-soft:#15352a; --warn:#f0c46c; --warn-soft:#3a2f13; --bad:#ff9189; --bad-soft:#401f1e;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
     color-scheme:dark;
   }
 }
-:root[data-theme="dark"]{
-  --bg:#0e1525; --surface:#161f38; --field:#0e1730; --ink:#e7ecf8; --muted:#9aa7c4;
-  --line:#26324f; --line-strong:#3b4a6e;
-  --accent:#86abf0; --accent-ink:#0a1530; --accent-soft:#1c2c52;
-  --good:#74d6a6; --good-soft:#15352a; --warn:#f0c46c; --warn-soft:#3a2f13; --bad:#ff9189; --bad-soft:#401f1e;
-  color-scheme:dark;
-}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--font-body)}
-.shell{max-width:1120px;margin:0 auto;padding-block:22px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--font-body)}
+[hidden]{display:none!important}
 h1,h2,h3{font-family:var(--font-head);margin:0;text-wrap:balance;line-height:1.3}
-h1{font-size:clamp(1.3rem,3.6vw,1.75rem);font-weight:600}
-h2{font-size:1.15rem;font-weight:600}
+h2{font-size:1.1rem;font-weight:600}
 p{margin:0}
-.top{display:flex;flex-wrap:wrap;gap:16px 24px;justify-content:space-between;align-items:flex-start;padding-bottom:18px}
-.top>div{min-width:0}
-.eyebrow{font-size:.85rem;color:var(--muted);letter-spacing:.04em}
-.sub{color:var(--muted);margin-top:4px}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.band{background:linear-gradient(135deg,var(--band) 0%,var(--band2) 100%);color:var(--band-ink);padding-top:env(safe-area-inset-top,0px)}
+.band .toprow{display:flex;flex-wrap:wrap;gap:12px 20px;justify-content:space-between;align-items:center;padding-block:14px 4px}
+.brand{font-size:.9rem;color:var(--band-muted);letter-spacing:.05em}
+.band h1{font-size:clamp(1.25rem,3.4vw,1.7rem);font-weight:600;padding-block:2px 4px}
+.band .yearline{color:var(--band-muted);padding-bottom:14px}
 .who{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .who .me{display:grid;line-height:1.25;text-align:right}
-.who .me span{color:var(--muted);font-size:.88rem}
-.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line-strong);margin-bottom:18px;overflow-x:auto}
-.tab{padding:.65rem 1.1rem;color:var(--muted);text-decoration:none;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
-.tab[aria-current="page"]{color:var(--accent);border-bottom-color:var(--accent)}
-.tab:hover{color:var(--ink)}
-a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:18px}
-.panel.narrow{max-width:420px}
+.who .me span{color:var(--band-muted);font-size:.85rem}
+.who .btn{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.35)}
+.who .btn:hover{background:rgba(255,255,255,.24)}
+.who .btn.light{background:#fff;color:var(--band);border-color:#fff}
+.tabs{display:flex;gap:4px;overflow-x:auto}
+.tab{padding:.6rem 1.2rem;color:var(--band-muted);text-decoration:none;font-weight:600;border-radius:10px 10px 0 0;white-space:nowrap}
+.tab:hover{color:#fff;background:rgba(255,255,255,.1)}
+.tab[aria-current="page"]{background:var(--bg);color:var(--brand)}
+main.wrap{padding-block:20px 56px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.pad{padding:20px}
 .stack{display:grid;gap:18px}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px}
 .f{display:grid;gap:6px;min-width:0;align-content:start}
 .f>span,.lbl{font-weight:600;font-size:.92rem}
 .hint{font-size:.88rem;color:var(--muted)}
 .hint.warn{color:var(--warn)}
-input,select,textarea{font:inherit;color:inherit;background:var(--field);border:1px solid var(--line-strong);border-radius:8px;padding:.55rem .75rem;width:100%;min-width:0}
-textarea{resize:vertical;min-height:4.2rem}
-input[type=checkbox]{width:auto;accent-color:var(--accent)}
-.chk{display:flex;gap:8px;align-items:center;font-weight:500}
-.btn{font:inherit;font-weight:600;border-radius:8px;padding:.55rem 1.1rem;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-.btn:hover{border-color:var(--accent)}
-.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+input,select,textarea{font:inherit;color:inherit;background:var(--field);border:1px solid var(--line-strong);border-radius:9px;padding:.55rem .75rem;width:100%;min-width:0}
+input[type=checkbox]{width:auto;accent-color:var(--brand)}
+textarea{resize:vertical;min-height:4.4rem}
+.btn{font:inherit;font-weight:600;border-radius:9px;padding:.55rem 1.1rem;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover{border-color:var(--brand)}
+.btn.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
 .btn.danger{color:var(--bad);border-color:var(--bad)}
-.btn.sm{padding:.25rem .7rem;font-size:.9rem}
+.btn.sm{padding:.25rem .75rem;font-size:.9rem}
+.btn.wide{width:100%;padding:.8rem 1rem;font-size:1.05rem}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .err{color:var(--bad);font-weight:600;min-height:1.2em}
-.notice{padding:.7rem 1rem;border-radius:8px;background:var(--warn-soft);color:var(--warn);margin-bottom:14px}
+.notice{padding:.7rem 1rem;border-radius:10px;background:var(--warn-soft);color:var(--warn);margin-bottom:14px}
 .notice.bad{background:var(--bad-soft);color:var(--bad)}
 .notice.good{background:var(--good-soft);color:var(--good)}
-.mem{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,12rem) auto;gap:8px;margin-bottom:8px}
-.words{color:var(--muted);font-size:.9rem;min-height:1.3em}
-.nextno{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px}
-.nextno b{font-family:var(--font-head);font-size:1.5rem;color:var(--accent);font-variant-numeric:tabular-nums}
-.agency{padding:.55rem .75rem;border:1px dashed var(--line-strong);border-radius:8px;background:var(--bg)}
-details.adv{border-top:1px solid var(--line);padding-top:12px}
-details.adv summary{cursor:pointer;font-weight:600;color:var(--accent)}
-.result{border:2px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:20px;display:grid;gap:8px;margin-bottom:18px}
-.result .big{font-family:var(--font-head);font-weight:700;font-size:clamp(2.2rem,9vw,3.6rem);line-height:1.1;color:var(--accent);font-variant-numeric:tabular-nums}
-.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:12px}
-.toolbar .grow{flex:1 1 260px}
-.toolbar .f:not(.grow){flex:0 1 150px}
-.summary{color:var(--muted);margin-bottom:8px;font-variant-numeric:tabular-nums}
-.regwrap{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.reg-head,.row{display:grid;grid-template-columns:7.2rem 6.6rem minmax(0,2.4fr) 8rem minmax(0,1.4fr) minmax(0,1.2fr);gap:12px;padding:12px 16px}
-.reg-head{background:var(--bg);color:var(--muted);font-size:.84rem;font-weight:600;border-bottom:1px solid var(--line-strong)}
-.row{border-bottom:1px solid var(--line);cursor:pointer;align-items:start}
-.row:last-child{border-bottom:0}
-.row:hover{background:var(--accent-soft)}
-.row>*{min-width:0;overflow-wrap:anywhere}
-.no{font-family:var(--font-head);font-weight:700;font-size:1.08rem;color:var(--accent);font-variant-numeric:tabular-nums;display:grid;gap:4px;justify-items:start}
-.num{font-variant-numeric:tabular-nums;text-align:right}
-.row.void .proj{text-decoration:line-through;color:var(--muted)}
-.row.void .no{color:var(--muted)}
-.stamp{border:1.5px solid var(--bad);color:var(--bad);border-radius:4px;padding:0 .4rem;font-size:.78rem;font-weight:700;transform:rotate(-3deg);font-family:var(--font-body)}
-.chip{font-size:.78rem;font-weight:600;padding:.05rem .55rem;border-radius:999px;background:var(--warn-soft);color:var(--warn);font-family:var(--font-body);white-space:nowrap}
+.chk{display:flex;gap:8px;align-items:center;font-weight:500}
+/* register */
+.stats{display:flex;flex-wrap:wrap;gap:6px 36px;margin-bottom:16px}
+.stat{display:grid;line-height:1.3}
+.stat span{color:var(--muted);font-size:.85rem}
+.stat b{font-family:var(--font-head);font-size:1.3rem;font-variant-numeric:tabular-nums}
+.searchcard{padding:16px;display:grid;gap:14px;margin-bottom:12px}
+.sbox{position:relative}
+.sbox svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--muted);pointer-events:none}
+.sbox input{padding:.8rem 2.8rem .8rem 2.8rem;font-size:1.08rem;border-radius:12px;border-width:2px}
+.sbox .x{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);font-size:1.4rem;line-height:1;cursor:pointer;padding:.3rem .6rem;border-radius:8px}
+.filters{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end}
+.filters .f{flex:0 1 160px}
+.filters .f.auto{flex:0 0 auto}
+input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:9px;overflow:hidden}
+.seg button{font:inherit;font-weight:600;white-space:nowrap;border:0;background:var(--surface);color:var(--ink);padding:.5rem .9rem;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line-strong)}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink)}
+.tog{font:inherit;font-weight:600;font-size:.92rem;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);padding:.45rem .85rem;border-radius:999px;cursor:pointer}
+.tog[aria-pressed="true"]{background:var(--brand-soft);border-color:var(--brand);color:var(--brand)}
+details.more summary{cursor:pointer;font-weight:600;color:var(--brand);width:fit-content}
+details.more .grid2{margin-top:12px}
+.resultbar{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--muted)}
+.rows{overflow:hidden}
+.item{display:grid;grid-template-columns:5.6rem minmax(0,1fr) auto;gap:6px 16px;padding:14px 18px;border-bottom:1px solid var(--line);cursor:pointer;align-items:start}
+.item:last-child{border-bottom:0}
+.item:hover{background:var(--brand-soft)}
+.item>*{min-width:0;overflow-wrap:anywhere}
+.numb{font-family:var(--font-head);font-weight:700;font-size:1.3rem;line-height:1.25;color:var(--brand);font-variant-numeric:tabular-nums}
+.numb small{display:block;font-size:.76rem;color:var(--muted);font-weight:500}
+.proj{font-weight:600}
+.meta{color:var(--muted);font-size:.92rem}
+.side{text-align:right}
+.price{font-weight:600;font-variant-numeric:tabular-nums}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.item.void .proj{text-decoration:line-through;color:var(--muted)}
+.item.void .numb{color:var(--muted)}
+.stamp{border:1.5px solid var(--bad);color:var(--bad);border-radius:4px;padding:0 .4rem;font-size:.78rem;font-weight:700}
+.chip{font-size:.78rem;font-weight:600;padding:.05rem .55rem;border-radius:999px;background:var(--warn-soft);color:var(--warn);white-space:nowrap}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 .detail{grid-column:1/-1;border-top:1px dashed var(--line-strong);padding-top:12px;display:grid;gap:10px;cursor:default}
 .detail ol{margin:0;padding-left:1.4rem}
-.detail .meta{color:var(--muted);font-size:.9rem}
-.empty{padding:40px 16px;text-align:center;color:var(--muted)}
-.acct{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.4fr) auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+.empty{padding:44px 16px;text-align:center;color:var(--muted)}
+.more-row{padding:14px;text-align:center;border-top:1px solid var(--line)}
+/* issue */
+.issuegrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+.rail{display:grid;gap:16px;position:sticky;top:12px}
+.nextcard{padding:18px;text-align:center;background:var(--brand-soft);border-color:var(--brand)}
+.nextcard b{display:block;font-family:var(--font-head);font-size:2.4rem;line-height:1.2;color:var(--brand);font-variant-numeric:tabular-nums}
+.sec{display:grid;gap:14px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.sec:last-of-type{border-bottom:0;padding-bottom:0}
+.sec>h2{font-size:1rem;color:var(--brand)}
+.mem{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,12rem) auto;gap:8px;margin-bottom:8px}
+.words{color:var(--muted);font-size:.9rem;min-height:1.3em}
+.agency{padding:.55rem .75rem;border:1px dashed var(--line-strong);border-radius:9px;background:var(--bg);font-weight:600}
+.recent{display:grid;gap:0}
+.recent .r{padding:10px 0;border-bottom:1px solid var(--line);display:grid;gap:4px}
+.recent .r:last-child{border-bottom:0}
+.recent .r b{font-family:var(--font-head);color:var(--brand)}
+.result{border:2px solid var(--brand);background:var(--brand-soft);border-radius:14px;padding:20px;display:grid;gap:8px;margin-bottom:18px}
+.result .big{font-family:var(--font-head);font-weight:700;font-size:clamp(2.2rem,9vw,3.6rem);line-height:1.1;color:var(--brand);font-variant-numeric:tabular-nums}
+/* admin */
+.acct{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.4fr) auto;gap:10px 14px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
 .acct:last-child{border-bottom:0}
 .acct small{color:var(--muted);display:block}
-.off{opacity:.6}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:.6rem 1.1rem;border-radius:8px;z-index:20;max-width:90vw}
-@media (max-width:860px){
-  .reg-head{display:none}
-  .row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"no date" "proj proj" "co price" "ag ag"}
-  .c-no{grid-area:no}.c-date{grid-area:date;text-align:right;color:var(--muted)}.c-proj{grid-area:proj}.c-price{grid-area:price}.c-co{grid-area:co;color:var(--muted)}.c-ag{grid-area:ag;color:var(--muted);font-size:.9rem}
-  .acct{grid-template-columns:1fr}
-}
-@media (max-width:560px){
-  .mem{grid-template-columns:minmax(0,1fr) auto}
-  .mem select{grid-column:1}
+.acct.off{opacity:.62}
+.pill{font-size:.76rem;font-weight:700;border-radius:999px;padding:.05rem .55rem;background:var(--brand-soft);color:var(--brand);margin-left:6px}
+.pill.off{background:var(--bad-soft);color:var(--bad)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:.6rem 1.1rem;border-radius:9px;z-index:20;max-width:90vw}
+.foot{margin-top:28px;color:var(--muted);font-size:.85rem;text-align:center}
+@media (max-width:900px){.issuegrid{grid-template-columns:1fr}.rail{position:static;order:-1}.acct{grid-template-columns:1fr}}
+@media (max-width:620px){
+  .item{grid-template-columns:4.4rem minmax(0,1fr);padding:12px 14px}
+  .side{grid-column:2;text-align:left;display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between}
+  .mem{grid-template-columns:minmax(0,1fr) auto}.mem select{grid-column:1}
   .who .me{text-align:left}
+  .filters .f{flex:1 1 140px}
+  .filters .f.auto{flex:1 1 100%}
+  .seg{display:flex;width:100%}.seg button{flex:1;padding-inline:.4rem}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
-<div class="shell">
-<header class="top">
-  <div>
-    <p class="eyebrow">e-GP · การตรวจรับพัสดุ</p>
+<header class="band">
+  <div class="wrap">
+    <div class="toprow">
+      <span class="brand">e-GP · การตรวจรับพัสดุ</span>
+      <div class="who" id="who"></div>
+    </div>
     <h1>ทะเบียนเลขคำสั่งแต่งตั้งคณะกรรมการตรวจรับพัสดุ</h1>
-    <p class="sub" id="yearLine">กำลังโหลดข้อมูล…</p>
+    <p class="yearline" id="yearLine">กำลังโหลดข้อมูล…</p>
+    <nav class="tabs" aria-label="เมนู">
+      <a class="tab" href="#register" data-tab="register">ทะเบียนเลข</a>
+      <a class="tab" href="#issue" data-tab="issue">ออกเลขใหม่</a>
+      <a class="tab" href="#admin" data-tab="admin" id="adminTab" hidden>ผู้ดูแลระบบ</a>
+    </nav>
   </div>
-  <div class="who" id="who"></div>
 </header>
 
-<nav class="tabs" id="tabs" aria-label="เมนู">
-  <a class="tab" href="#register" data-tab="register">ทะเบียนเลข</a>
-  <a class="tab" href="#issue" data-tab="issue">ออกเลขใหม่</a>
-</nav>
+<main class="wrap">
 <div id="notice"></div>
 
+<!-- ทะเบียนเลข -->
 <section id="v-register">
-  <div class="toolbar">
-    <label class="f grow"><span>ค้นหา</span><input id="q" type="search" placeholder="เลขที่ โครงการ บริษัท ชื่อกรรมการ หน่วยงาน"></label>
-    <label class="f"><span>ปี พ.ศ.</span><select id="yearSel"></select></label>
-    <label class="f"><span>หน่วยงาน</span><select id="agSel"></select></label>
-    <button class="btn" id="csvBtn" type="button">ส่งออก CSV</button>
+  <div class="stats" id="stats"></div>
+  <div class="card searchcard">
+    <div class="sbox">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" autocomplete="off" aria-label="ค้นหา" placeholder="ค้นหา: เลขที่ (เช่น 25) ชื่อโครงการ บริษัท กรรมการ หน่วยงาน">
+      <button class="x" id="qClear" type="button" aria-label="ล้างคำค้น" hidden>×</button>
+    </div>
+    <div class="filters">
+      <label class="f"><span>ปี พ.ศ.</span><select id="yearSel"></select></label>
+      <label class="f"><span>หน่วยงาน</span><select id="agSel"></select></label>
+      <div class="f auto"><span>สถานะ</span>
+        <div class="seg" role="group" aria-label="สถานะ">
+          <button type="button" data-st="all" aria-pressed="true">ทั้งหมด</button>
+          <button type="button" data-st="active" aria-pressed="false">ใช้งาน</button>
+          <button type="button" data-st="void" aria-pressed="false">ยกเลิก</button>
+        </div>
+      </div>
+      <div class="f auto"><span>เรียง</span>
+        <div class="seg" role="group" aria-label="เรียงลำดับ">
+          <button type="button" data-sort="desc" aria-pressed="true">ใหม่ → เก่า</button>
+          <button type="button" data-sort="asc" aria-pressed="false">เก่า → ใหม่</button>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="tog" type="button" id="togMine" aria-pressed="false" hidden>เฉพาะหน่วยงานของฉัน</button>
+      <button class="tog" type="button" id="togBack" aria-pressed="false">ลงวันที่ย้อนหลัง</button>
+      <details class="more" id="moreBox"><summary>ช่วงวันที่ในคำสั่ง</summary>
+        <div class="grid2">
+          <label class="f"><span>ตั้งแต่วันที่</span><input id="dFrom" type="date"></label>
+          <label class="f"><span>ถึงวันที่</span><input id="dTo" type="date"></label>
+        </div>
+      </details>
+      <button class="btn sm" type="button" id="clearBtn" hidden>ล้างตัวกรองทั้งหมด</button>
+    </div>
   </div>
-  <p class="summary" id="summary"></p>
-  <div class="regwrap">
-    <div class="reg-head"><span>เลขที่</span><span>ลงวันที่</span><span>โครงการ</span><span class="num">วงเงิน (บาท)</span><span>บริษัท</span><span>หน่วยงาน</span></div>
-    <div id="list"></div>
+  <div class="resultbar">
+    <span id="resultInfo" aria-live="polite"></span>
+    <button class="btn sm" id="csvBtn" type="button">ส่งออก CSV</button>
   </div>
+  <div class="card rows" id="list"></div>
 </section>
 
+<!-- ออกเลขใหม่ -->
 <section id="v-issue" hidden>
-  <div id="loginBox" class="panel narrow" hidden>
+  <div id="loginBox" class="card pad stack" style="max-width:440px" hidden>
     <div><h2>เข้าสู่ระบบเพื่อออกเลข</h2><p class="hint">ใช้ชื่อผู้ใช้และรหัสผ่านที่ผู้ดูแลระบบมอบให้หน่วยงาน</p></div>
     <form id="loginForm" class="stack" novalidate>
       <label class="f"><span>ชื่อผู้ใช้</span><input id="lUser" autocomplete="username" autocapitalize="off" spellcheck="false"></label>
       <label class="f"><span>รหัสผ่าน</span><input id="lPass" type="password" autocomplete="current-password"></label>
       <p class="err" id="loginErr" role="alert"></p>
-      <button class="btn primary" type="submit" id="loginBtn">เข้าสู่ระบบ</button>
+      <button class="btn primary wide" type="submit" id="loginBtn">เข้าสู่ระบบ</button>
     </form>
   </div>
 
   <div id="issueBox" hidden>
     <div id="resultBox"></div>
-    <form id="issueForm" class="panel" novalidate>
-      <div class="nextno">
+    <div class="issuegrid">
+      <form id="issueForm" class="card pad stack" novalidate>
         <div><h2 id="formTitle">ออกเลขคำสั่งแต่งตั้งคณะกรรมการตรวจรับพัสดุ</h2><p class="hint" id="formSub">เลขรันต่อจากเลขล่าสุดตามลำดับที่กดออกเลข ไม่ผูกกับวันที่ในคำสั่ง</p></div>
-        <div id="nextNoBox">เลขถัดไป <b id="nextNo">-</b></div>
-      </div>
-      <label class="f"><span>ชื่อโครงการ</span><textarea id="fProject" placeholder="เช่น จัดซื้อวัสดุคอมพิวเตอร์ ประจำปีงบประมาณ 2570"></textarea></label>
-      <div class="grid2">
-        <label class="f"><span>วงเงิน / ราคา (บาท)</span><input id="fPrice" inputmode="decimal" placeholder="0.00" autocomplete="off"><span class="words" id="priceWords"></span></label>
-        <label class="f"><span>บริษัท / ผู้ขาย</span><input id="fCompany" autocomplete="off"></label>
-      </div>
-      <div>
-        <p class="lbl" style="margin-bottom:8px">คณะกรรมการตรวจรับพัสดุ</p>
-        <div id="memberList"></div>
-        <button class="btn sm" type="button" data-act="addMember" id="addMemberBtn">+ เพิ่มกรรมการ</button>
-      </div>
-      <div class="grid2">
-        <label class="f"><span>ลงวันที่ในคำสั่ง</span><input id="fDate" type="date"><span class="hint" id="dateHint">เลือกวันที่ย้อนหลังได้</span></label>
-        <div class="f"><span>หน่วยงานที่ขอเลข</span><div class="agency" id="agencyShown">-</div><span class="hint">ดึงจากบัญชีที่เข้าสู่ระบบ</span></div>
-      </div>
-      <details class="adv" id="advBox">
-        <summary>ระบุเลขเอง / ออกเลขซ้ำ</summary>
-        <div class="stack" style="margin-top:12px">
-          <label class="chk"><input type="checkbox" id="fManual"> ใช้เลขที่ที่ระบุเอง แทนเลขถัดไป</label>
-          <label class="f"><span>เลขที่</span><input id="fManualNo" inputmode="numeric" placeholder="เช่น 7" disabled></label>
-          <div id="dupBox" class="notice" hidden>
-            <span id="dupText"></span>
-            <label class="chk" style="margin-top:6px"><input type="checkbox" id="fDupOk"> ยืนยันออกเลขซ้ำ</label>
+        <div class="sec">
+          <h2>รายละเอียดโครงการ</h2>
+          <label class="f"><span>ชื่อโครงการ</span><textarea id="fProject" placeholder="เช่น จัดซื้อวัสดุคอมพิวเตอร์ ประจำปีงบประมาณ 2570"></textarea></label>
+          <div class="grid2">
+            <label class="f"><span>วงเงิน / ราคา (บาท)</span><input id="fPrice" inputmode="decimal" placeholder="0.00" autocomplete="off"><span class="words" id="priceWords"></span></label>
+            <label class="f"><span>บริษัท / ผู้ขาย</span><input id="fCompany" list="dlCompany" autocomplete="off"></label>
           </div>
         </div>
-      </details>
-      <p class="err" id="formErr" role="alert"></p>
-      <div class="actions">
-        <button class="btn primary" type="submit" id="submitBtn">ออกเลข</button>
-        <button class="btn" type="button" data-act="cancelEdit" id="cancelEditBtn" hidden>ยกเลิกการแก้ไข</button>
-      </div>
-    </form>
+        <div class="sec">
+          <h2>คณะกรรมการตรวจรับพัสดุ</h2>
+          <div><div id="memberList"></div>
+          <button class="btn sm" type="button" data-act="addMember" id="addMemberBtn">+ เพิ่มกรรมการ</button></div>
+        </div>
+        <div class="sec">
+          <h2>ข้อมูลคำสั่ง</h2>
+          <div class="grid2">
+            <label class="f"><span>ลงวันที่ในคำสั่ง</span><input id="fDate" type="date"><span class="hint" id="dateHint">เลือกวันที่ย้อนหลังได้</span></label>
+            <div class="f"><span>หน่วยงานที่ขอเลข</span><div class="agency" id="agencyShown">-</div><span class="hint">ดึงจากบัญชีที่เข้าสู่ระบบ</span></div>
+          </div>
+          <details class="more" id="advBox">
+            <summary>ระบุเลขเอง / ออกเลขซ้ำ</summary>
+            <div class="stack" style="margin-top:12px">
+              <label class="chk"><input type="checkbox" id="fManual"> ใช้เลขที่ที่ระบุเอง แทนเลขถัดไป</label>
+              <label class="f"><span>เลขที่</span><input id="fManualNo" inputmode="numeric" placeholder="เช่น 7" disabled></label>
+              <div id="dupBox" class="notice" hidden>
+                <span id="dupText"></span>
+                <label class="chk" style="margin-top:6px"><input type="checkbox" id="fDupOk"> ยืนยันออกเลขซ้ำ</label>
+              </div>
+            </div>
+          </details>
+        </div>
+        <p class="err" id="formErr" role="alert"></p>
+        <div class="actions">
+          <button class="btn primary wide" type="submit" id="submitBtn" style="flex:1 1 220px">ออกเลข</button>
+          <button class="btn" type="button" data-act="cancelEdit" id="cancelEditBtn" hidden>ยกเลิกการแก้ไข</button>
+        </div>
+      </form>
+      <aside class="rail">
+        <div class="card nextcard" id="nextNoBox"><span class="hint">เลขถัดไป</span><b id="nextNo">-</b></div>
+        <div class="card pad"><h2 style="margin-bottom:6px">ล่าสุดของหน่วยงานคุณ</h2><div class="recent" id="recentBox"></div></div>
+      </aside>
+    </div>
   </div>
 </section>
-</div>
+
+<!-- ผู้ดูแลระบบ -->
+<section id="v-admin" hidden>
+  <div id="adminDenied" class="card pad" hidden><p>หน้านี้สำหรับผู้ดูแลระบบเท่านั้น</p></div>
+  <div id="adminBox" class="stack" hidden>
+    <div id="credBox"></div>
+    <div class="card pad stack">
+      <div><h2>เพิ่มบัญชีหน่วยงาน</h2><p class="hint">สร้างแล้วใช้ล็อกอินได้ทันที ระบบแสดงรหัสผ่านครั้งเดียว ให้จดหรือคัดลอกส่งให้หน่วยงาน</p></div>
+      <form id="acctForm" class="stack" novalidate>
+        <div class="grid2">
+          <label class="f"><span>ชื่อผู้ใช้ (a-z ตัวเลข . _ -)</span><input id="aUser" autocapitalize="off" spellcheck="false" autocomplete="off" placeholder="เช่น hr01"></label>
+          <label class="f"><span>ชื่อ-สกุลผู้ใช้</span><input id="aName" autocomplete="off"></label>
+          <label class="f"><span>หน่วยงาน</span><input id="aAgency" autocomplete="off"></label>
+          <label class="f"><span>รหัสผ่าน (อย่างน้อย 6 ตัว)</span><input id="aPass" autocomplete="off" spellcheck="false"></label>
+        </div>
+        <label class="chk"><input type="checkbox" id="aAdmin"> ให้สิทธิ์ผู้ดูแลระบบ (แก้ไข/ยกเลิกเลขของทุกหน่วยงาน และจัดการบัญชี)</label>
+        <p class="err" id="acctErr" role="alert"></p>
+        <div class="actions">
+          <button class="btn primary" type="submit" id="acctBtn">สร้างบัญชี</button>
+          <button class="btn" type="button" data-act="genPass">สุ่มรหัสผ่าน</button>
+        </div>
+      </form>
+    </div>
+    <div class="card pad stack">
+      <div><h2>บัญชีทั้งหมด</h2><p class="hint" id="acctCount"></p></div>
+      <div id="acctList"><p class="hint">กำลังโหลด…</p></div>
+    </div>
+    <div class="card pad stack">
+      <div><h2>ปีที่ใช้ออกเลข</h2><p class="hint">เปลี่ยนปีแล้วเลขจะเริ่มที่ 1 ของปีนั้นเอง ข้อมูลปีเดิมยังอยู่ในทะเบียน</p></div>
+      <form id="yearForm" class="actions" novalidate>
+        <label class="f" style="width:9rem"><span>ปี พ.ศ.</span><input id="aYear" inputmode="numeric"></label>
+        <button class="btn primary" type="submit" style="align-self:flex-end">บันทึกปี</button>
+      </form>
+    </div>
+  </div>
+</section>
+<p class="foot">ทะเบียนนี้เปิดให้ดูได้ทุกคน การออกเลข แก้ไข และยกเลิกต้องเข้าสู่ระบบด้วยบัญชีหน่วยงาน</p>
+</main>
+<datalist id="dlCompany"></datalist>
+<datalist id="dlMember"></datalist>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -226,34 +346,46 @@ function read6(c,higher){c=c.replace(/^0+/,'');let o='';const L=c.length;for(let
 function readInt(s){const ch=[];while(s.length>6){ch.unshift(s.slice(-6));s=s.slice(0,-6);}ch.unshift(s);return ch.map((c,i)=>read6(c,i>0)+(i<ch.length-1?'ล้าน':'')).join('');}
 function bahtText(n){if(!(n>0)||n>=1e15)return '';const [i,f]=n.toFixed(2).split('.');const w=readInt(i)||'ศูนย์';return w+'บาท'+(f==='00'?'ถ้วน':read6(f)+'สตางค์');}
 
-/* ===== ตั้งค่า: วางค่าจาก Supabase (Project Settings > API) ===== */
-const CONFIG = {
-  SUPABASE_URL: 'https://yjzjkcrhjonxiytxvybt.supabase.co',
-  SUPABASE_KEY: 'sb_publishable_d5RNsbNSrGkrMcNvYxWCSg_qvZTQP_s'
-};
-/* ================================================================ */
-
-function toast(msg){const t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);}
+const CONFIG=window.EGP_CONFIG||{SUPABASE_URL:'',SUPABASE_KEY:''};
+function toast(msg){const t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800);}
 function setNotice(msg,kind){$('notice').innerHTML=msg?`<div class="notice ${kind||''}" role="status">${esc(msg)}</div>`:'';}
 async function copyText(t){try{await navigator.clipboard.writeText(t);toast('คัดลอกแล้ว');}catch(e){toast('คัดลอกอัตโนมัติไม่ได้ กรุณาเลือกข้อความแล้วคัดลอกเอง');}}
 
-const S={sb:null,profile:null,year:2570,viewYear:null,orders:[],ready:false,nextNo:null,q:'',ag:'',expanded:null,voiding:null,editing:null,busy:false,reloadT:null};
-const toEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:u+'@egp.local';};
-const canModify=o=>!!S.profile&&S.profile.agency===o.agency;
+const S={sb:null,profile:null,year:2570,viewYear:null,orders:[],ready:false,nextNo:null,tab:'register',
+  q:'',ag:'',st:'all',sort:'desc',mine:false,back:false,from:'',to:'',limit:50,
+  expanded:null,voiding:null,editing:null,busy:false,reloadT:null,accts:null,editAcct:null,delAcct:null};
+const DOMAIN='@egp.local';
+const toEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:u+DOMAIN;};
+const isAdmin=()=>!!(S.profile&&S.profile.is_admin);
+const canModify=o=>!!S.profile&&(isAdmin()||S.profile.agency===o.agency);
 const isoLocal=ms=>{const d=new Date(ms);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
-const errMsg=e=>(e&&(e.message||e.details))||'ไม่ทราบสาเหตุ';
+const errMsg=e=>(e&&(e.message||e.details||e.error))||'ไม่ทราบสาเหตุ';
+
+/* ---------- ค้นหา ---------- */
+const tokensOf=q=>String(q||'').trim().toLowerCase().split(/\s+/).filter(Boolean);
+function hayOf(o){return [o.number+'/'+o.year,o.project,o.company,o.agency,o.issuer_name,String(o.price),thDate(o.order_date),...(o.members||[]).map(m=>m.name)].join(' ').toLowerCase();}
+function matchTokens(o,toks){if(!toks.length)return true;const hay=o._hay||(o._hay=hayOf(o));
+  return toks.every(t=>/^\d+$/.test(t)?(String(o.number)===t||(t.length>=3&&hay.includes(t))):hay.includes(t));}
+function hl(text,toks,all){text=String(text==null?'':text);
+  const ts=toks.filter(x=>x&&(all||!/^\d{1,2}$/.test(x)));if(!ts.length)return esc(text);
+  const re=new RegExp('('+ts.map(x=>x.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')).join('|')+')','gi');
+  return text.split(re).map((p,i)=>i%2?'<mark>'+esc(p)+'</mark>':esc(p)).join('');}
+function isBackdated(o){return !!(o.order_date&&o.issued_at&&o.order_date<isoLocal(Date.parse(o.issued_at)));}
+function filtered(){const toks=tokensOf(S.q),my=S.profile&&S.profile.agency;
+  const rows=S.orders.filter(o=>(!S.ag||o.agency===S.ag)&&(S.st==='all'||(S.st==='void')===(o.status==='void'))&&(!S.mine||o.agency===my)&&(!S.back||isBackdated(o))&&(!S.from||o.order_date>=S.from)&&(!S.to||o.order_date<=S.to)&&matchTokens(o,toks));
+  rows.sort((a,b)=>{const d=(a.number-b.number)||(Date.parse(a.issued_at)-Date.parse(b.issued_at));return S.sort==='asc'?d:-d;});return rows;}
+const hasFilter=()=>!!(S.q||S.ag||S.st!=='all'||S.mine||S.back||S.from||S.to);
 
 /* ---------- โหลดข้อมูล ---------- */
 async function loadYear(){const {data,error}=await S.sb.from('settings').select('year').eq('id',1).maybeSingle();
   if(error)throw error;S.year=data&&data.year?data.year:2570;if(S.viewYear==null)S.viewYear=S.year;}
 async function loadOrders(){
   const out=[];for(let from=0;;from+=1000){
-    const {data,error}=await S.sb.from('orders').select('*').eq('year',S.viewYear).order('number',{ascending:false}).order('issued_at',{ascending:false}).range(from,from+999);
+    const {data,error}=await S.sb.from('orders').select('*').eq('year',S.viewYear).order('number',{ascending:false}).range(from,from+999);
     if(error)throw error;out.push(...data);if(data.length<1000)break;}
   S.orders=out;S.ready=true;
-  if(S.viewYear===S.year){const mx=out.reduce((m,o)=>Math.max(m,o.number),0);
-    const {data}=await S.sb.from('orders').select('number').eq('year',S.year).order('number',{ascending:false}).limit(1);
-    S.nextNo=((data&&data[0]&&data[0].number)||mx)+1;}
+  if(S.viewYear===S.year){const {data}=await S.sb.from('orders').select('number').eq('year',S.year).order('number',{ascending:false}).limit(1);
+    S.nextNo=((data&&data[0]&&data[0].number)||0)+1;}
   renderAll();}
 function scheduleReload(){clearTimeout(S.reloadT);S.reloadT=setTimeout(()=>{if(!S.busy)loadOrders().catch(()=>{});},400);}
 async function loadProfile(){S.profile=null;
@@ -263,26 +395,87 @@ async function loadProfile(){S.profile=null;
   S.profile=data;}
 
 /* ---------- เมนู ---------- */
-function route(){let h=(location.hash||'').replace('#','');if(!['register','issue'].includes(h))h='register';S.tab=h;
-  ['register','issue'].forEach(t=>{$('v-'+t).hidden=t!==h;});
+function route(){let h=(location.hash||'').replace('#','');if(!['register','issue','admin'].includes(h))h='register';
+  if(h==='admin'&&S.sb&&S.profile&&!isAdmin())h='register';S.tab=h;
+  ['register','issue','admin'].forEach(t=>{$('v-'+t).hidden=t!==h;});
   document.querySelectorAll('.tab').forEach(a=>{if(a.dataset.tab===h)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  if(h==='admin'&&isAdmin()&&!S.accts)loadAccts();
   renderAll();}
-function renderAll(){renderHeader();renderWho();renderIssue();renderRegister();}
-function renderHeader(){$('yearLine').textContent=S.sb?`ออกเลขปี พ.ศ. ${S.year}${S.nextNo&&S.viewYear===S.year?` · เลขถัดไป ${S.nextNo}/${S.year}`:''}`:'';}
+function renderAll(){renderHeader();renderWho();renderIssue();renderRegister();renderAdmin();}
+function renderHeader(){$('adminTab').hidden=!isAdmin();
+  $('yearLine').textContent=S.sb?`ออกเลขปี พ.ศ. ${S.year}${S.nextNo&&S.viewYear===S.year?` · เลขถัดไป ${S.nextNo}/${S.year}`:''}`:'';}
 function renderWho(){const a=S.profile;
-  $('who').innerHTML=a?`<div class="me"><strong>${esc(a.name)}</strong><span>${esc(a.agency)}</span></div><button class="btn sm" type="button" data-act="logout">ออกจากระบบ</button>`
-    :`<a class="btn sm primary" href="#issue">เข้าสู่ระบบ</a>`;}
+  $('who').innerHTML=a?`<div class="me"><strong>${esc(a.name)}</strong><span>${esc(a.agency)}${a.is_admin?' · ผู้ดูแลระบบ':''}</span></div><button class="btn sm" type="button" data-act="logout">ออกจากระบบ</button>`
+    :`<a class="btn sm light" href="#issue">เข้าสู่ระบบ</a>`;}
 
+/* ---------- ทะเบียน ---------- */
+function fillSelects(){
+  const ys=[];for(let y=S.year+1;y>=S.year-4;y--)ys.push(y);if(!ys.includes(S.viewYear))ys.push(S.viewYear);
+  const ysel=$('yearSel'),yh=ys.map(y=>`<option value="${y}">${y}</option>`).join('');
+  if(ysel.dataset.h!==yh){ysel.innerHTML=yh;ysel.dataset.h=yh;}ysel.value=String(S.viewYear);
+  const ags=[...new Set(S.orders.map(o=>o.agency).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th'));
+  const asel=$('agSel'),ah='<option value="">ทุกหน่วยงาน</option>'+ags.map(a=>`<option>${esc(a)}</option>`).join('');
+  if(asel.dataset.h!==ah){asel.innerHTML=ah;asel.dataset.h=ah;}asel.value=S.ag;}
+function rowHtml(o,toks){
+  const open=String(S.expanded)===String(o.id),void_=o.status==='void',back=isBackdated(o);
+  const mem=(o.members||[]).map(m=>`<li>${hl(m.name,toks)} <span class="hint">· ${esc(m.role)}</span></li>`).join('');
+  let acts='';
+  if(canModify(o)){
+    if(String(S.voiding)===String(o.id))acts=`<div class="grid2"><label class="f"><span>เหตุผลที่ยกเลิกเลข</span><input data-voidreason="${o.id}" autocomplete="off"></label><div class="actions" style="align-self:flex-end"><button class="btn danger sm" type="button" data-act="voidOk" data-id="${o.id}">ยืนยันยกเลิกเลข</button><button class="btn sm" type="button" data-act="voidNo">ไม่ยกเลิก</button></div></div>`;
+    else acts=`<div class="actions"><button class="btn sm" type="button" data-act="edit" data-id="${o.id}">แก้ไขรายละเอียด</button>${void_?(isAdmin()?`<button class="btn sm" type="button" data-act="restore" data-id="${o.id}">คืนสถานะเลข</button>`:''):`<button class="btn danger sm" type="button" data-act="void" data-id="${o.id}">ยกเลิกเลข</button>`}</div>`;}
+  const detail=open?`<div class="detail"><div><p class="lbl">คณะกรรมการตรวจรับพัสดุ</p><ol>${mem||'<li>-</li>'}</ol></div>
+    <p class="meta">ออกเลขเมื่อ ${esc(o.issued_at?thDateTime(Date.parse(o.issued_at)):'-')} โดย ${esc(o.issuer_name||'-')}${o.manual?' · ระบุเลขเอง':''}${o.updated_at?` · แก้ไขล่าสุด ${esc(thDateTime(Date.parse(o.updated_at)))}`:''}</p>
+    ${void_?`<p class="meta" style="color:var(--bad)">ยกเลิกเลข${o.void_reason?': '+esc(o.void_reason):''}${o.void_at?' · '+esc(thDateTime(Date.parse(o.void_at))):''}</p>`:''}${acts}</div>`:'';
+  const memHit=toks.length&&!open&&(o.members||[]).some(m=>toks.some(t=>t.length>1&&String(m.name).toLowerCase().includes(t)))?`<p class="meta">กรรมการ: ${(o.members||[]).filter(m=>toks.some(t=>t.length>1&&String(m.name).toLowerCase().includes(t))).map(m=>hl(m.name,toks)).join(', ')}</p>`:'';
+  return `<div class="item${void_?' void':''}" data-row="${o.id}" tabindex="0" role="button" aria-expanded="${open}">
+    <div class="numb">${hl(o.number,toks,true)}<small>/${esc(o.year)}</small></div>
+    <div><div class="proj">${hl(o.project,toks)}</div><div class="meta">${hl(o.company,toks)} · ${hl(o.agency,toks)}</div>${memHit}
+      <div class="badges">${void_?'<span class="stamp">ยกเลิก</span>':''}${back?'<span class="chip">ลงวันที่ย้อนหลัง</span>':''}</div></div>
+    <div class="side"><div class="price">${esc(baht(o.price))} บาท</div><div class="meta">ลงวันที่ ${esc(thDate(o.order_date))}</div></div>${detail}</div>`;}
+function renderRegister(){
+  if(!S.sb)return;
+  fillSelects();
+  const all=S.orders,rows=filtered(),toks=tokensOf(S.q);
+  const act=all.filter(o=>o.status!=='void'),sum=act.reduce((s,o)=>s+(+o.price||0),0),last=all.reduce((m,o)=>Math.max(m,o.number||0),0);
+  $('stats').innerHTML=S.ready?`<div class="stat"><span>รายการปี ${esc(S.viewYear)}</span><b>${all.length}</b></div><div class="stat"><span>เลขล่าสุด</span><b>${last?esc(last)+'/'+esc(S.viewYear):'-'}</b></div><div class="stat"><span>วงเงินรวม (ไม่นับที่ยกเลิก)</span><b>${esc(baht(sum))}</b></div>`:'';
+  $('qClear').hidden=!S.q;$('clearBtn').hidden=!hasFilter();
+  const me=S.profile;$('togMine').hidden=!me;
+  document.querySelectorAll('[data-st]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.st===S.st)));
+  document.querySelectorAll('[data-sort]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sort===S.sort)));
+  $('togMine').setAttribute('aria-pressed',String(S.mine));$('togBack').setAttribute('aria-pressed',String(S.back));
+  $('resultInfo').textContent=S.ready?(hasFilter()?`พบ ${rows.length} จาก ${all.length} รายการ`:`ทั้งหมด ${all.length} รายการ`):'กำลังโหลดข้อมูล…';
+  const shown=rows.slice(0,S.limit);
+  if(!S.ready)$('list').innerHTML='<div class="empty">กำลังโหลดข้อมูล…</div>';
+  else if(!all.length)$('list').innerHTML=`<div class="empty"><p><strong>ยังไม่มีเลขที่ออกในปี ${esc(S.viewYear)}</strong></p><p>เมื่อมีการออกเลข รายการจะแสดงที่นี่ และทุกคนที่เปิดหน้านี้เห็นพร้อมกัน</p></div>`;
+  else if(!rows.length)$('list').innerHTML='<div class="empty"><p><strong>ไม่พบรายการที่ตรงกัน</strong></p><p>ลองพิมพ์คำให้สั้นลง หรือกด “ล้างตัวกรองทั้งหมด”</p></div>';
+  else $('list').innerHTML=shown.map(o=>rowHtml(o,toks)).join('')+(rows.length>shown.length?`<div class="more-row"><button class="btn" type="button" data-act="more">แสดงเพิ่ม (เหลืออีก ${rows.length-shown.length} รายการ)</button></div>`:'');}
+function exportCsv(){
+  const rows=filtered().slice().reverse();if(!rows.length){toast('ไม่มีรายการให้ส่งออก');return;}
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const head=['เลขที่','ลงวันที่','โครงการ','วงเงิน (บาท)','บริษัท','คณะกรรมการ','หน่วยงาน','ผู้ออกเลข','ออกเลขเมื่อ','สถานะ'];
+  const lines=[head.map(q).join(',')].concat(rows.map(o=>[o.number+'/'+o.year,thDate(o.order_date),o.project,(+o.price||0).toFixed(2),o.company,(o.members||[]).map(m=>m.name+' ('+m.role+')').join('; '),o.agency,o.issuer_name,o.issued_at?thDateTime(Date.parse(o.issued_at)):'',o.status==='void'?'ยกเลิก'+(o.void_reason?': '+o.void_reason:''):'ใช้งาน'].map(q).join(',')));
+  const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ทะเบียนคำสั่งตรวจรับพัสดุ-${S.viewYear}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 /* ---------- ฟอร์มออกเลข ---------- */
 const ROLES=['ประธานกรรมการ','กรรมการ','กรรมการและเลขานุการ'];
 const defMembers=()=>[{name:'',role:ROLES[0]},{name:'',role:ROLES[1]},{name:'',role:ROLES[1]}];
 let members=defMembers();
-function renderMembers(){$('memberList').innerHTML=members.map((m,i)=>`<div class="mem"><input data-mi="${i}" data-mf="name" value="${esc(m.name)}" placeholder="ชื่อ-สกุล (รวมคำนำหน้า)" aria-label="ชื่อกรรมการคนที่ ${i+1}" autocomplete="off"><select data-mi="${i}" data-mf="role" aria-label="ตำแหน่งกรรมการคนที่ ${i+1}">${ROLES.map(r=>`<option${r===m.role?' selected':''}>${r}</option>`).join('')}</select><button class="btn sm" type="button" data-act="rmMember" data-i="${i}"${members.length<=1?' disabled':''} aria-label="ลบกรรมการคนที่ ${i+1}">ลบ</button></div>`).join('');
+function renderMembers(){$('memberList').innerHTML=members.map((m,i)=>`<div class="mem"><input data-mi="${i}" data-mf="name" list="dlMember" value="${esc(m.name)}" placeholder="ชื่อ-สกุล (รวมคำนำหน้า)" aria-label="ชื่อกรรมการคนที่ ${i+1}" autocomplete="off"><select data-mi="${i}" data-mf="role" aria-label="ตำแหน่งกรรมการคนที่ ${i+1}">${ROLES.map(r=>`<option${r===m.role?' selected':''}>${r}</option>`).join('')}</select><button class="btn sm" type="button" data-act="rmMember" data-i="${i}"${members.length<=1?' disabled':''} aria-label="ลบกรรมการคนที่ ${i+1}">ลบ</button></div>`).join('');
   $('addMemberBtn').disabled=members.length>=9;}
+function fillDatalists(){
+  const comp=[...new Set(S.orders.map(o=>o.company).filter(Boolean))].slice(0,200);
+  const names=[...new Set(S.orders.flatMap(o=>(o.members||[]).map(m=>m.name)).filter(Boolean))].slice(0,300);
+  const ch=comp.map(c=>`<option value="${esc(c)}">`).join(''),nh=names.map(c=>`<option value="${esc(c)}">`).join('');
+  if($('dlCompany').dataset.h!==ch){$('dlCompany').innerHTML=ch;$('dlCompany').dataset.h=ch;}
+  if($('dlMember').dataset.h!==nh){$('dlMember').innerHTML=nh;$('dlMember').dataset.h=nh;}}
 function renderIssue(){
   const ready=!!S.sb;$('loginBox').hidden=!(ready&&!S.profile);$('issueBox').hidden=!(ready&&S.profile);
-  if(ready&&S.profile){$('agencyShown').textContent=S.profile.agency;
-    $('nextNo').textContent=`${S.nextNo||1}/${S.year}`;$('nextNoBox').hidden=!!S.editing;$('submitBtn').disabled=S.busy;}}
+  if(!(ready&&S.profile))return;
+  $('agencyShown').textContent=S.profile.agency;
+  $('nextNo').textContent=`${S.nextNo||1}/${S.year}`;$('nextNoBox').hidden=!!S.editing;$('submitBtn').disabled=S.busy;
+  fillDatalists();
+  const mine=S.orders.filter(o=>o.agency===S.profile.agency&&S.viewYear===S.year).sort((a,b)=>b.number-a.number||Date.parse(b.issued_at)-Date.parse(a.issued_at)).slice(0,5);
+  $('recentBox').innerHTML=mine.length?mine.map(o=>`<div class="r"><div><b>${esc(o.number)}/${esc(o.year)}</b>${o.status==='void'?' <span class="stamp">ยกเลิก</span>':''}</div><div>${esc(o.project)}</div><div class="meta">${esc(o.company)} · ${esc(baht(o.price))} บาท</div><div class="actions"><button class="btn sm" type="button" data-act="reuse" data-id="${o.id}">ใช้กรรมการชุดนี้</button><button class="btn sm" type="button" data-act="copyNo" data-t="เลขที่ ${esc(o.number)}/${esc(o.year)}">คัดลอกเลข</button></div></div>`).join(''):'<p class="hint">ยังไม่มีรายการของหน่วยงานนี้ในปีนี้</p>';}
 function dateHint(){const d=$('fDate').value,h=$('dateHint');h.className='hint';
   h.textContent=d&&d<isoLocal(Date.now())?'ลงวันที่ย้อนหลัง เลขยังรันต่อจากเลขล่าสุด':'เลือกวันที่ย้อนหลังได้';
   if(d&&+d.slice(0,4)+543!==S.year){h.textContent+=` · ปีของวันที่ (พ.ศ. ${+d.slice(0,4)+543}) ต่างจากปีของเลขที่ (${S.year})`;h.className='hint warn';}}
@@ -297,80 +490,55 @@ async function checkManual(){const box=$('dupBox');box.hidden=true;$('fDupOk').c
   if(data&&data[0]&&parseInt($('fManualNo').value,10)===n){$('dupText').textContent=`เลขที่ ${n}/${S.year} ถูกใช้แล้ว (${data[0].project} · ${data[0].agency}) ออกซ้ำได้ ติ๊กยืนยันเพื่อดำเนินการ`;box.hidden=false;}}
 function showResult(r){const t=`เลขที่ ${r.number}/${r.year}`;
   $('resultBox').innerHTML=`<div class="result" role="status"><p class="hint">ออกเลขสำเร็จ${r.manual?' (ระบุเลขเอง)':''}</p><p class="big">${esc(t)}</p><p><strong>${esc(r.project)}</strong></p><p class="hint">${esc(r.company)} · ${esc(baht(r.price))} บาท · ลงวันที่ ${esc(thDate(r.order_date))}</p><div class="actions"><button class="btn primary" type="button" data-act="copyNo" data-t="${esc(t)}">คัดลอกเลขที่</button><button class="btn" type="button" data-act="closeResult">ปิด</button></div></div>`;
-  $('resultBox').scrollIntoView({block:'nearest'});}
+  window.scrollTo({top:0,behavior:'smooth'});}
 function startEdit(o){S.editing=o.id;location.hash='#issue';
   $('fProject').value=o.project||'';$('fPrice').value=String(o.price);$('fCompany').value=o.company||'';$('fDate').value=o.order_date||todayISO();
   members=(o.members&&o.members.length?o.members:defMembers()).map(m=>({name:m.name||'',role:m.role||ROLES[1]}));renderMembers();
   $('priceWords').textContent=bahtText(parsePrice(o.price));
   $('formTitle').textContent=`แก้ไขรายละเอียด เลขที่ ${o.number}/${o.year}`;$('formSub').hidden=true;$('advBox').hidden=true;
-  $('submitBtn').textContent='บันทึกการแก้ไข';$('cancelEditBtn').hidden=false;$('formErr').textContent='';$('resultBox').innerHTML='';dateHint();renderIssue();}
-/* ---------- ทะเบียน ---------- */
-const hay=o=>[o.number+'/'+o.year,o.project,o.company,o.agency,o.issuer_name,...(o.members||[]).map(m=>m.name)].join(' ').toLowerCase();
-function filtered(){const q=S.q.trim().toLowerCase();return S.orders.filter(o=>(!S.ag||o.agency===S.ag)&&(!q||hay(o).includes(q)));}
-function fillSelects(){
-  const ys=[];for(let y=S.year+1;y>=S.year-4;y--)ys.push(y);if(!ys.includes(S.viewYear))ys.push(S.viewYear);
-  const ysel=$('yearSel'),yh=ys.map(y=>`<option value="${y}">${y}</option>`).join('');
-  if(ysel.dataset.h!==yh){ysel.innerHTML=yh;ysel.dataset.h=yh;}ysel.value=String(S.viewYear);
-  const ags=[...new Set(S.orders.map(o=>o.agency).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th'));
-  const asel=$('agSel'),ah='<option value="">ทุกหน่วยงาน</option>'+ags.map(a=>`<option>${esc(a)}</option>`).join('');
-  if(asel.dataset.h!==ah){asel.innerHTML=ah;asel.dataset.h=ah;}asel.value=S.ag;}
-function rowHtml(o){
-  const open=S.expanded===o.id,void_=o.status==='void',back=o.order_date&&o.issued_at&&o.order_date<isoLocal(Date.parse(o.issued_at));
-  const mem=(o.members||[]).map(m=>`<li>${esc(m.name)} <span class="hint">· ${esc(m.role)}</span></li>`).join('');
-  let acts='';
-  if(canModify(o)){
-    if(S.voiding===o.id)acts=`<div class="grid2"><label class="f"><span>เหตุผลที่ยกเลิกเลข</span><input data-voidreason="${o.id}" autocomplete="off"></label><div class="actions" style="align-self:flex-end"><button class="btn danger sm" type="button" data-act="voidOk" data-id="${o.id}">ยืนยันยกเลิกเลข</button><button class="btn sm" type="button" data-act="voidNo">ไม่ยกเลิก</button></div></div>`;
-    else acts=`<div class="actions"><button class="btn sm" type="button" data-act="edit" data-id="${o.id}">แก้ไขรายละเอียด</button>${void_?'':`<button class="btn danger sm" type="button" data-act="void" data-id="${o.id}">ยกเลิกเลข</button>`}</div>`;}
-  const detail=open?`<div class="detail"><div><p class="lbl">คณะกรรมการตรวจรับพัสดุ</p><ol>${mem||'<li>-</li>'}</ol></div>
-    <p class="meta">ออกเลขเมื่อ ${esc(o.issued_at?thDateTime(Date.parse(o.issued_at)):'-')} โดย ${esc(o.issuer_name||'-')}${o.manual?' · ระบุเลขเอง':''}${o.updated_at?` · แก้ไขล่าสุด ${esc(thDateTime(Date.parse(o.updated_at)))}`:''}</p>
-    ${void_?`<p class="meta" style="color:var(--bad)">ยกเลิกเลข${o.void_reason?': '+esc(o.void_reason):''}${o.void_at?' · '+esc(thDateTime(Date.parse(o.void_at))):''}</p>`:''}${acts}</div>`:'';
-  return `<div class="row${void_?' void':''}" data-row="${o.id}" tabindex="0" role="button" aria-expanded="${open}">
-    <div class="c-no no"><span>${esc(o.number)}/${esc(o.year)}</span>${void_?'<span class="stamp">ยกเลิก</span>':''}${back?'<span class="chip">ย้อนหลัง</span>':''}</div>
-    <div class="c-date">${esc(thDate(o.order_date))}</div><div class="c-proj proj">${esc(o.project)}</div>
-    <div class="c-price num">${esc(baht(o.price))}</div><div class="c-co">${esc(o.company)}</div><div class="c-ag">${esc(o.agency)}</div>${detail}</div>`;}
-function renderRegister(){
-  if(!S.sb){return;}
-  fillSelects();
-  const all=S.orders,rows=filtered(),sum=all.filter(o=>o.status!=='void').reduce((s,o)=>s+(+o.price||0),0),last=all.reduce((m,o)=>Math.max(m,o.number||0),0);
-  $('summary').textContent=S.ready?(all.length?`ปี ${S.viewYear}: ${all.length} รายการ · เลขล่าสุด ${last}/${S.viewYear} · วงเงินรวม ${baht(sum)} บาท${rows.length!==all.length?` · แสดง ${rows.length}`:''}`:`ปี ${S.viewYear}: ยังไม่มีรายการ`):'กำลังโหลดข้อมูล…';
-  if(!S.ready)$('list').innerHTML='<div class="empty">กำลังโหลดข้อมูล…</div>';
-  else if(!all.length)$('list').innerHTML=`<div class="empty"><p><strong>ยังไม่มีเลขที่ออกในปี ${esc(S.viewYear)}</strong></p><p>เมื่อมีการออกเลข รายการจะแสดงที่นี่ และทุกคนที่เปิดหน้านี้เห็นพร้อมกัน</p></div>`;
-  else if(!rows.length)$('list').innerHTML='<div class="empty">ไม่พบรายการที่ตรงกับคำค้น</div>';
-  else $('list').innerHTML=rows.map(rowHtml).join('');}
-function exportCsv(){
-  const rows=filtered().slice().reverse();if(!rows.length){toast('ไม่มีรายการให้ส่งออก');return;}
-  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-  const head=['เลขที่','ลงวันที่','โครงการ','วงเงิน (บาท)','บริษัท','คณะกรรมการ','หน่วยงาน','ผู้ออกเลข','ออกเลขเมื่อ','สถานะ'];
-  const lines=[head.map(q).join(',')].concat(rows.map(o=>[o.number+'/'+o.year,thDate(o.order_date),o.project,(+o.price||0).toFixed(2),o.company,(o.members||[]).map(m=>m.name+' ('+m.role+')').join('; '),o.agency,o.issuer_name,o.issued_at?thDateTime(Date.parse(o.issued_at)):'',o.status==='void'?'ยกเลิก'+(o.void_reason?': '+o.void_reason:''):'ใช้งาน'].map(q).join(',')));
-  const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`ทะเบียนคำสั่งตรวจรับพัสดุ-${S.viewYear}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+  $('submitBtn').textContent='บันทึกการแก้ไข';$('cancelEditBtn').hidden=false;$('formErr').textContent='';$('resultBox').innerHTML='';dateHint();renderIssue();window.scrollTo({top:0});}
 
 /* ---------- เหตุการณ์ ---------- */
 const byId=id=>S.orders.find(o=>String(o.id)===String(id));
+const rpcFail=(e,what)=>toast(what+'ไม่สำเร็จ: '+errMsg(e));
 document.addEventListener('click',async e=>{
   const b=e.target.closest('[data-act]');
   if(b){const act=b.dataset.act,id=b.dataset.id;
-    if(act==='logout'){await S.sb.auth.signOut();S.profile=null;S.editing=null;renderAll();}
+    if(act==='logout'){await S.sb.auth.signOut();S.profile=null;S.editing=null;S.accts=null;if(S.tab==='admin')location.hash='#register';renderAll();}
     else if(act==='addMember'){members.push({name:'',role:ROLES[1]});renderMembers();}
     else if(act==='rmMember'){members.splice(+b.dataset.i,1);renderMembers();}
     else if(act==='cancelEdit'){resetForm();location.hash='#register';}
     else if(act==='copyNo')copyText(b.dataset.t);
     else if(act==='closeResult')$('resultBox').innerHTML='';
+    else if(act==='more'){S.limit+=50;renderRegister();}
+    else if(act==='reuse'){const o=byId(id);if(o&&!S.editing){members=(o.members||[]).map(m=>({name:m.name||'',role:m.role||ROLES[1]}));if(!members.length)members=defMembers();renderMembers();toast('ใส่รายชื่อกรรมการชุดเดิมแล้ว');}else if(S.editing)toast('กำลังแก้ไขรายการอยู่');}
     else if(act==='edit'){const o=byId(id);if(o)startEdit(o);}
     else if(act==='void'){S.voiding=id;renderRegister();}
     else if(act==='voidNo'){S.voiding=null;renderRegister();}
     else if(act==='voidOk'){const inp=document.querySelector('[data-voidreason="'+id+'"]');
       const {error}=await S.sb.rpc('void_order',{p_id:+id,p_reason:inp?inp.value:''});
-      if(error)toast('ยกเลิกเลขไม่สำเร็จ: '+errMsg(error));else{S.voiding=null;toast('ยกเลิกเลขแล้ว');await loadOrders();}}
+      if(error)rpcFail(error,'ยกเลิกเลข');else{S.voiding=null;toast('ยกเลิกเลขแล้ว');await loadOrders();}}
+    else if(act==='restore'){const {error}=await S.sb.rpc('restore_order',{p_id:+id});
+      if(error)rpcFail(error,'คืนสถานะ (ต้องรัน upgrade.sql แล้ว)');else{toast('คืนสถานะเลขแล้ว');await loadOrders();}}
+    else adminClick(act,b);
     return;}
+  const seg=e.target.closest('[data-st],[data-sort]');
+  if(seg){if(seg.dataset.st)S.st=seg.dataset.st;if(seg.dataset.sort)S.sort=seg.dataset.sort;S.limit=50;renderRegister();return;}
   const row=e.target.closest('[data-row]');
   if(row&&!e.target.closest('.detail')){const id=row.dataset.row;S.expanded=String(S.expanded)===id?null:id;S.voiding=null;renderRegister();}
 });
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[data-row]')){e.preventDefault();e.target.click();}});
-$('q').addEventListener('input',e=>{S.q=e.target.value;renderRegister();});
-$('agSel').addEventListener('change',e=>{S.ag=e.target.value;renderRegister();});
+let qt=null;$('q').addEventListener('input',e=>{clearTimeout(qt);const v=e.target.value;qt=setTimeout(()=>{S.q=v;S.limit=50;renderRegister();},120);});
+$('qClear').addEventListener('click',()=>{$('q').value='';S.q='';S.limit=50;renderRegister();$('q').focus();});
+$('agSel').addEventListener('change',e=>{S.ag=e.target.value;S.limit=50;renderRegister();});
+$('dFrom').addEventListener('change',e=>{S.from=e.target.value;S.limit=50;renderRegister();});
+$('dTo').addEventListener('change',e=>{S.to=e.target.value;S.limit=50;renderRegister();});
+$('togMine').addEventListener('click',()=>{S.mine=!S.mine;S.limit=50;renderRegister();});
+$('togBack').addEventListener('click',()=>{S.back=!S.back;S.limit=50;renderRegister();});
+$('clearBtn').addEventListener('click',()=>{S.q='';S.ag='';S.st='all';S.mine=false;S.back=false;S.from='';S.to='';S.limit=50;$('q').value='';$('dFrom').value='';$('dTo').value='';renderRegister();});
 $('yearSel').addEventListener('change',async e=>{S.viewYear=+e.target.value;S.expanded=null;S.ag='';S.ready=false;renderRegister();try{await loadOrders();}catch(x){setNotice('โหลดข้อมูลไม่สำเร็จ','bad');}});
 $('csvBtn').addEventListener('click',exportCsv);
+document.addEventListener('keydown',e=>{if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test((e.target.tagName||''))&&S.tab==='register'){e.preventDefault();$('q').focus();}});
 $('memberList').addEventListener('input',e=>{const t=e.target;if(t.dataset.mi!=null&&t.dataset.mf==='name')members[+t.dataset.mi].name=t.value;});
 $('memberList').addEventListener('change',e=>{const t=e.target;if(t.dataset.mi!=null&&t.dataset.mf==='role')members[+t.dataset.mi].role=t.value;});
 $('fPrice').addEventListener('input',e=>{$('priceWords').textContent=bahtText(parsePrice(e.target.value));});
@@ -383,7 +551,7 @@ $('loginForm').addEventListener('submit',async e=>{e.preventDefault();const err=
   $('loginBtn').disabled=true;
   const {error}=await S.sb.auth.signInWithPassword({email:toEmail(u),password:p});
   if(error)err.textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
-  else{$('lPass').value='';await loadProfile();setNotice('');resetForm();renderAll();}
+  else{$('lPass').value='';await loadProfile();setNotice('');resetForm();route();}
   $('loginBtn').disabled=false;});
 
 $('issueForm').addEventListener('submit',async e=>{e.preventDefault();if(S.busy||!S.profile)return;
@@ -409,20 +577,73 @@ $('issueForm').addEventListener('submit',async e=>{e.preventDefault();if(S.busy|
     S.busy=false;await loadOrders();
   }catch(x){err.textContent='บันทึกไม่สำเร็จ: '+errMsg(x);}
   S.busy=false;$('submitBtn').textContent=S.editing?'บันทึกการแก้ไข':'ออกเลข';renderIssue();});
+/* ---------- ผู้ดูแลระบบ (เรียก /api/admin) ---------- */
+async function api(action,payload){
+  const {data:{session}}=await S.sb.auth.getSession();
+  if(!session)throw new Error('กรุณาเข้าสู่ระบบใหม่');
+  let r;try{r=await fetch('/api/admin',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session.access_token},body:JSON.stringify(Object.assign({action},payload||{}))});}
+  catch(e){throw new Error('เชื่อมต่อส่วนหลังบ้านไม่ได้');}
+  let j={};try{j=await r.json();}catch(e){}
+  if(r.status===404)throw new Error('ไม่พบ /api/admin ตรวจสอบว่าอัปโหลดโฟลเดอร์ api (ไฟล์ admin.js) และ package.json ขึ้น GitHub แล้ว');
+  if(!r.ok)throw new Error(j.error||('ผิดพลาด ('+r.status+')'));
+  return j;}
+async function loadAccts(){try{const j=await api('list');S.accts=j.accounts||[];}catch(e){S.accts=null;$('acctList').innerHTML=`<div class="notice bad">${esc(errMsg(e))}</div>`;return;}renderAdmin();}
+function renderAdmin(){
+  const ok=isAdmin()&&!!S.sb;$('adminDenied').hidden=ok||!S.sb||S.tab!=='admin';$('adminBox').hidden=!ok;
+  if(!ok)return;
+  if(!$('aYear').dataset.t){$('aYear').value=S.year;$('aYear').dataset.t='1';}
+  if(!S.accts)return;
+  $('acctCount').textContent=`${S.accts.length} บัญชี`;
+  $('acctList').innerHTML=S.accts.length?S.accts.map(a=>{
+    const me=S.profile&&a.id===S.profile.id,editing=S.editAcct===a.id;
+    const uname=String(a.email||'').replace(DOMAIN,'');
+    if(editing)return `<div class="acct"><div class="grid2" style="grid-column:1/-1"><label class="f"><span>ชื่อ-สกุล</span><input data-ef="name" value="${esc(a.name)}"></label><label class="f"><span>หน่วยงาน</span><input data-ef="agency" value="${esc(a.agency)}"></label></div><label class="chk" style="grid-column:1/-1"><input type="checkbox" data-ef="is_admin"${a.is_admin?' checked':''}${me?' disabled':''}> ผู้ดูแลระบบ</label><div class="actions" style="grid-column:1/-1"><button class="btn primary sm" type="button" data-act="saveAcct" data-id="${esc(a.id)}">บันทึก</button><button class="btn sm" type="button" data-act="cancelAcct">ยกเลิก</button></div></div>`;
+    return `<div class="acct${a.active?'':' off'}"><div><strong>${esc(a.name)}</strong>${a.is_admin?'<span class="pill">ผู้ดูแล</span>':''}${a.active?'':'<span class="pill off">ปิดใช้งาน</span>'}<small>ชื่อผู้ใช้ ${esc(uname)}${me?' (คุณ)':''}</small></div><div>${esc(a.agency)}<small>${a.last_sign_in_at?'เข้าใช้ล่าสุด '+esc(thDateTime(Date.parse(a.last_sign_in_at))):'ยังไม่เคยเข้าใช้'}</small></div>
+    <div class="actions"><button class="btn sm" type="button" data-act="editAcct" data-id="${esc(a.id)}">แก้ไข</button><button class="btn sm" type="button" data-act="resetPw" data-id="${esc(a.id)}">ตั้งรหัสผ่านใหม่</button>${me?'':`<button class="btn sm" type="button" data-act="toggleAcct" data-id="${esc(a.id)}">${a.active?'ปิดใช้งาน':'เปิดใช้งาน'}</button>${S.delAcct===a.id?`<button class="btn danger sm" type="button" data-act="delOk" data-id="${esc(a.id)}">ยืนยันลบ</button><button class="btn sm" type="button" data-act="delNo">ไม่ลบ</button>`:`<button class="btn danger sm" type="button" data-act="delAcct" data-id="${esc(a.id)}">ลบ</button>`}`}</div></div>`;}).join(''):'<p class="hint">ยังไม่มีบัญชี</p>';}
+function showCred(u,pw,verb){$('credBox').innerHTML=`<div class="result" role="status"><p class="hint">${esc(verb)} · แสดงครั้งเดียว กรุณาจดหรือคัดลอก</p><p>ชื่อผู้ใช้ <strong>${esc(u)}</strong></p><p>รหัสผ่าน <strong style="font-family:var(--font-head);font-size:1.5rem;user-select:all">${esc(pw)}</strong></p><div class="actions"><button class="btn primary" type="button" data-act="copyNo" data-t="${esc('ชื่อผู้ใช้: '+u+'  รหัสผ่าน: '+pw)}">คัดลอก</button><button class="btn" type="button" data-act="closeCred">ปิด</button></div></div>`;
+  $('credBox').scrollIntoView({block:'nearest'});}
+const genPw=()=>{const A='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';return [...crypto.getRandomValues(new Uint8Array(8))].map(x=>A[x%A.length]).join('');};
+async function adminClick(act,b){const id=b.dataset.id;const acc=S.accts&&S.accts.find(a=>a.id===id);
+  try{
+    if(act==='closeCred')$('credBox').innerHTML='';
+    else if(act==='genPass')$('aPass').value=genPw();
+    else if(act==='editAcct'){S.editAcct=id;renderAdmin();}
+    else if(act==='cancelAcct'){S.editAcct=null;renderAdmin();}
+    else if(act==='saveAcct'){const g=f=>document.querySelector('[data-ef="'+f+'"]');
+      await api('update',{id,name:g('name').value.trim(),agency:g('agency').value.trim(),is_admin:g('is_admin').checked});S.editAcct=null;toast('บันทึกแล้ว');await loadAccts();}
+    else if(act==='toggleAcct'&&acc){await api('update',{id,active:!acc.active});toast(acc.active?'ปิดใช้งานแล้ว':'เปิดใช้งานแล้ว');await loadAccts();}
+    else if(act==='resetPw'&&acc){const pw=genPw();await api('resetPassword',{id,password:pw});showCred(String(acc.email).replace(DOMAIN,''),pw,'ตั้งรหัสผ่านใหม่แล้ว');}
+    else if(act==='delAcct'){S.delAcct=id;renderAdmin();}
+    else if(act==='delNo'){S.delAcct=null;renderAdmin();}
+    else if(act==='delOk'){await api('delete',{id});S.delAcct=null;toast('ลบบัญชีแล้ว');await loadAccts();}
+  }catch(e){toast(errMsg(e));}}
+$('acctForm').addEventListener('submit',async e=>{e.preventDefault();const err=$('acctErr');err.textContent='';
+  const u=$('aUser').value.trim().toLowerCase(),name=$('aName').value.trim(),agency=$('aAgency').value.trim(),pw=$('aPass').value;
+  if(!/^[a-z0-9._-]{2,30}$/.test(u))return void(err.textContent='ชื่อผู้ใช้ใช้ได้เฉพาะ a-z ตัวเลข . _ - ความยาว 2-30 ตัว');
+  if(!name||!agency)return void(err.textContent='กรอกชื่อ-สกุลผู้ใช้และหน่วยงาน');
+  if(pw.length<6)return void(err.textContent='รหัสผ่านอย่างน้อย 6 ตัวอักษร (กด “สุ่มรหัสผ่าน” ได้)');
+  $('acctBtn').disabled=true;
+  try{await api('create',{username:u,name,agency,password:pw,is_admin:$('aAdmin').checked});
+    showCred(u,pw,'สร้างบัญชีแล้ว');['aUser','aName','aAgency','aPass'].forEach(i=>{$(i).value='';});$('aAdmin').checked=false;await loadAccts();
+  }catch(x){err.textContent=errMsg(x);}
+  $('acctBtn').disabled=false;});
+$('yearForm').addEventListener('submit',async e=>{e.preventDefault();const y=parseInt($('aYear').value,10);
+  if(!(y>2500&&y<2700)){toast('ใส่ปี พ.ศ. ให้ถูกต้อง เช่น 2570');return;}
+  try{await api('setYear',{year:y});S.year=y;S.viewYear=y;S.nextNo=null;toast(`ตั้งปีออกเลขเป็น ${y} แล้ว`);await loadOrders();}catch(x){toast(errMsg(x));}});
 
 /* ---------- เริ่มต้น ---------- */
 (async function boot(){
   members=defMembers();renderMembers();$('fDate').value=todayISO();dateHint();
   window.addEventListener('hashchange',route);route();
-  if(!/^https:\/\/.+\.supabase\.co/.test(CONFIG.SUPABASE_URL)||CONFIG.SUPABASE_KEY.startsWith('วาง')){
-    setNotice('ยังไม่ได้ตั้งค่าการเชื่อมต่อฐานข้อมูล เปิดไฟล์ index.html แล้วใส่ SUPABASE_URL และ SUPABASE_KEY ในส่วน CONFIG ด้านบนของสคริปต์','bad');$('list').innerHTML='';return;}
+  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(String(CONFIG.SUPABASE_URL||''))||!CONFIG.SUPABASE_KEY||String(CONFIG.SUPABASE_KEY).startsWith('วาง')){
+    setNotice('ยังไม่ได้ตั้งค่าการเชื่อมต่อฐานข้อมูล เปิดไฟล์ config.js แล้วใส่ SUPABASE_URL (ลงท้าย .supabase.co ไม่มี / ท้าย) และ SUPABASE_KEY','bad');$('list').innerHTML='';return;}
   if(!window.supabase){setNotice('โหลดไลบรารีฐานข้อมูลไม่สำเร็จ ตรวจสอบอินเทอร์เน็ตแล้วรีเฟรชหน้า','bad');return;}
   S.sb=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_KEY);
   try{await loadYear();await loadProfile();resetForm();await loadOrders();}
-  catch(x){setNotice('เชื่อมต่อฐานข้อมูลไม่สำเร็จ: '+errMsg(x)+' (ตรวจสอบค่า URL/KEY และว่ารันไฟล์ schema.sql แล้ว)','bad');}
+  catch(x){setNotice('เชื่อมต่อฐานข้อมูลไม่สำเร็จ: '+errMsg(x),'bad');}
   S.sb.channel('orders-live').on('postgres_changes',{event:'*',schema:'public',table:'orders'},scheduleReload).subscribe();
   setInterval(()=>{if(!document.hidden&&!S.busy)loadYear().then(loadOrders).catch(()=>{});},30000);
-  renderAll();
+  route();
 })();
 </script>
 </body>
